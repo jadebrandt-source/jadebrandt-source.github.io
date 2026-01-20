@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Milk Price Timeline</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Helvetica, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: #f7f7f7;
+    }
+
+    .container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    .page {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .page.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    img {
+      max-height: 50vh;
+      margin-bottom: 24px;
+    }
+
+    .year {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      font-size: 2.5rem;
+      font-weight: bold;
+      
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="page active" data-price="17">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815494/original_ed1b22db195162694a3bf3415df0a8fe.png?1768921489?bc=0">
+    <div class="year">2026</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="13.50">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815777/original_ee860bf06b2f384fb79889bc01490e76.png?1768921984?bc=0">
+    <div class="year">2016</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="9">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815466/original_3306e9480693ee3183e2efc9002d5db5.png?1768921417?bc=0">
+    <div class="year">2009</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="7.60">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815461/original_67e35ccea31798d73d4a76349e435fe7.png?1768921417?bc=0">
+    <div class="year">2002</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="7">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815460/original_0a01c6ef1b5c91120a7fbe80d386f216.png?1768921417?bc=0">
+    <div class="year">1998</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="6.50">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42631008/original_ffcbcf6c1ac760fc5694415b2c8ca154.png?1768351534?bc=0">
+    <div class="year">1991</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="6">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815465/original_b1055715c8951edcebfb6aa607895fd8.png?1768921417?bc=0">
+    <div class="year">1989</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="5.50">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815463/original_56842be061dc87a8f61a7afa7ab8d6b9.png?1768921417?bc=0">
+    <div class="year">1985</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="5">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815459/original_0ee96368ae7c5724d252b5484e935ce8.png?1768921417?bc=0">
+    <div class="year">1983</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="4.50">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42816451/original_77c9145da02d85b00bd7844a332bf441.png?1768923246?bc=0">
+    <div class="year">1976</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="8">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42631007/original_6c7adeaad59230c2cfbcee33bc4072f0.png?1768351535?bc=0">
+    <div class="year">1970</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="3.50">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815456/original_3e0672b6229dd5c63c2560f525eeaaeb.png?1768921416?bc=0">
+    <div class="year">1953</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+  <div class="page" data-price="3">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42631005/original_ad963d29c8186bfc5544f4f6bac4dcb5.png?1768351535?bc=0">
+    <div class="year">1940</div>
+    <div class="price"><span class="price-value">0</span> kr</div>
+  </div>
+
+</div>
+
+<script>
+  const pages = document.querySelectorAll('.page');
+  let currentIndex = 0;
+
+  // -------- PRICE ANIMATION --------
+  function showPage(index) {
+    pages.forEach(p => p.classList.remove('active'));
+    const page = pages[index];
+    page.classList.add('active');
+    animatePrice(page);
+  }
+
+  function animatePrice(page) {
+    const target = parseFloat(page.dataset.price);
+    const span = page.querySelector('.price-value');
+
+    let current = 0;
+    span.textContent = "0";
+
+    const duration = 800;
+    const steps = 60;
+    const increment = target / steps;
+    const interval = duration / steps;
+
+    let count = 0;
+
+    const timer = setInterval(() => {
+      count++;
+      current += increment;
+
+      if (count >= steps) {
+        span.textContent = target.toFixed(2).replace('.00', '');
+        clearInterval(timer);
+      } else {
+        span.textContent = current.toFixed(2);
+      }
+    }, interval);
+  }
+
+  animatePrice(pages[0]);
+
+  // -------- PRECISE SCROLL LOGIC --------
+  let accumulatedDelta = 0;
+  const THRESHOLD = 80;      // how hard you must scroll
+  let isScrolling = false;
+  const COOLDOWN = 900;     // ms between page changes
+
+  window.addEventListener('wheel', (e) => {
+    if (isScrolling) return;
+
+    accumulatedDelta += e.deltaY;
+
+    if (Math.abs(accumulatedDelta) < THRESHOLD) return;
+
+    isScrolling = true;
+
+    if (accumulatedDelta > 0) {
+      currentIndex = Math.min(currentIndex + 1, pages.length - 1);
+    } else {
+      currentIndex = Math.max(currentIndex - 1, 0);
+    }
+
+    accumulatedDelta = 0;
+    showPage(currentIndex);
+
+    setTimeout(() => {
+      isScrolling = false;
+    }, COOLDOWN);
+
+  }, { passive: true });
+</script>
+
+</body>
+</html>
