@@ -3,20 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <title>Milk Price Timeline</title>
+
+  <!-- Google Font Doto -->
+  <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:wght@400;700&display=swap" rel="stylesheet">
+
+
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Helvetica, sans-serif;
+      font-family: 'Doto'; /* Use Doto font */
     }
 
     body {
-      height: 100vh;
-      overflow: hidden;
-      background: #f7f7f7;
-    }
-
+  height: 100vh;
+  overflow: hidden;
+  background-color: #e6f0ff; /* very light blue */
+  cursor: pointer;
+}
     .container {
       width: 100vw;
       height: 100vh;
@@ -43,33 +49,94 @@
       pointer-events: auto;
     }
 
-    img {
-      max-height: 50vh;
-      margin-bottom: 24px;
-    }
+.background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: top center;
+  z-index: -1;
+  transition: transform 0.5s ease;
+  /* fallback color if image doesn't fully cover */
+  background-color: #e6f0ff;
+}
 
-    .year {
-      font-size: 2rem;
-      margin-bottom: 8px;
-    }
 
-    .price {
-      font-size: 2.5rem;
-      font-weight: bold;
-      
-    }
-  </style>
+
+.page img {
+  position: relative; /* stays on top of the background */
+  max-height: 50vh;
+  margin-bottom: 24px;
+  z-index: 1;
+}
+
+
+img {
+  max-height: 50vh;
+  margin-bottom: 24px;
+}
+
+.year {
+  font-family: 'Google Sans Code', monospace;
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.price-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.price {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+/* Overlay for unlocking audio */
+.click-to-unlock {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  z-index: 9999;
+  text-align: center;
+  padding: 20px;
+  cursor: pointer;
+}
+</style>
 </head>
 <body>
 
-<div class="container">
+  <!-- AUDIO -->
+  <audio id="shortScrollSound" src="https://cdn.jsdelivr.net/gh/jadebrandt-source/shortslurp@main/shortslurp.mp3" preload="auto"></audio>
+  <audio id="longScrollSound" src="https://cdn.jsdelivr.net/gh/jadebrandt-source/longslurp@main/longslurp.mp3" preload="auto"></audio>
 
-  <div class="page active" data-price="17">
-    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815494/original_ed1b22db195162694a3bf3415df0a8fe.png?1768921489?bc=0">
-    <div class="year">2026</div>
-    <div class="price"><span class="price-value">0</span> kr</div>
+  <!-- CLICK TO UNLOCK -->
+  <div class="click-to-unlock" id="unlockOverlay">
+    Click anywhere to enable scroll sounds
   </div>
 
+  <div class="background-image" 
+     style="background-image: url('https://d2w9rnfcy7mm78.cloudfront.net/42822550/original_84e00ef86b46360b814cbccdcf411eb4.png?1768933186?bc=0');"></div>
+
+  <div class="container">
+    <!-- FIRST PAGE -->
+    <div class="page active" data-price="17">
+      <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815494/original_ed1b22db195162694a3bf3415df0a8fe.png?1768921489?bc=0" alt="Milk Bottle">
+    
+      <div class="year">2026</div>
+      <div class="price"><span class="price-value">0</span> kr</div>
+    </div>
+    
   <div class="page" data-price="13.50">
     <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815777/original_ee860bf06b2f384fb79889bc01490e76.png?1768921984?bc=0">
     <div class="year">2016</div>
@@ -125,7 +192,7 @@
   </div>
 
   <div class="page" data-price="8">
-    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42631007/original_6c7adeaad59230c2cfbcee33bc4072f0.png?1768351535?bc=0">
+    <img src="https://d2w9rnfcy7mm78.cloudfront.net/42815475/original_a380938bf841e00cc7e81f0f6bc4cdf1.png?1768921445?bc=0">
     <div class="year">1970</div>
     <div class="price"><span class="price-value">0</span> kr</div>
   </div>
@@ -142,79 +209,100 @@
     <div class="price"><span class="price-value">0</span> kr</div>
   </div>
 
-</div>
+  <script>
+    const pages = document.querySelectorAll('.page');
+const bgImage = document.querySelector('.background-image');
 
-<script>
-  const pages = document.querySelectorAll('.page');
-  let currentIndex = 0;
+let currentIndex = 0;
+const totalPages = 13; // maximum scrolls/pages
+const shortSound = document.getElementById("shortScrollSound");
+const longSound = document.getElementById("longScrollSound");
+let audioUnlocked = false;
+let isScrolling = false;
+let accumulatedDelta = 0;
 
-  // -------- PRICE ANIMATION --------
-  function showPage(index) {
-    pages.forEach(p => p.classList.remove('active'));
-    const page = pages[index];
-    page.classList.add('active');
-    animatePrice(page);
-  }
+const THRESHOLD = 80; // minimum wheel delta to trigger scroll
+const LONG_SCROLL_THRESHOLD = 300; // bigger scroll
+const COOLDOWN = 900; // ms between page changes
 
-  function animatePrice(page) {
-    const target = parseFloat(page.dataset.price);
-    const span = page.querySelector('.price-value');
+// Unlock audio
+document.getElementById("unlockOverlay").addEventListener("click", () => {
+  [shortSound, longSound].forEach(s => {
+    s.play().then(() => { s.pause(); s.currentTime = 0; }).catch(()=>{});
+  });
+  audioUnlocked = true;
+  document.getElementById("unlockOverlay").style.display = "none";
+});
 
-    let current = 0;
-    span.textContent = "0";
+// Show a page and animate price
+function showPage(index) {
+  pages.forEach(p => p.classList.remove('active'));
+  const page = pages[index];
+  page.classList.add('active');
+  animatePrice(page);
 
-    const duration = 800;
-    const steps = 60;
-    const increment = target / steps;
-    const interval = duration / steps;
+  // Move background progressively
+  let progress = index / (totalPages - 1);
+  bgImage.style.transform = `translateY(${progress * 100}%)`;
+}
 
-    let count = 0;
+// Price animation
+function animatePrice(page) {
+  const target = parseFloat(page.dataset.price);
+  const span = page.querySelector('.price-value');
+  let current = 0;
+  span.textContent = "0";
 
-    const timer = setInterval(() => {
-      count++;
-      current += increment;
+  const duration = 800;
+  const steps = 60;
+  const increment = target / steps;
+  const interval = duration / steps;
+  let count = 0;
 
-      if (count >= steps) {
-        span.textContent = target.toFixed(2).replace('.00', '');
-        clearInterval(timer);
-      } else {
-        span.textContent = current.toFixed(2);
-      }
-    }, interval);
-  }
-
-  animatePrice(pages[0]);
-
-  // -------- PRECISE SCROLL LOGIC --------
-  let accumulatedDelta = 0;
-  const THRESHOLD = 80;      // how hard you must scroll
-  let isScrolling = false;
-  const COOLDOWN = 900;     // ms between page changes
-
-  window.addEventListener('wheel', (e) => {
-    if (isScrolling) return;
-
-    accumulatedDelta += e.deltaY;
-
-    if (Math.abs(accumulatedDelta) < THRESHOLD) return;
-
-    isScrolling = true;
-
-    if (accumulatedDelta > 0) {
-      currentIndex = Math.min(currentIndex + 1, pages.length - 1);
+  const timer = setInterval(() => {
+    count++;
+    current += increment;
+    if(count >= steps) {
+      span.textContent = target.toFixed(2).replace('.00','');
+      clearInterval(timer);
     } else {
-      currentIndex = Math.max(currentIndex - 1, 0);
+      span.textContent = current.toFixed(2);
     }
+  }, interval);
+}
 
-    accumulatedDelta = 0;
-    showPage(currentIndex);
+// Initial page
+showPage(0);
 
-    setTimeout(() => {
-      isScrolling = false;
-    }, COOLDOWN);
+// Scroll handling
+window.addEventListener('wheel', e => {
+  if(!audioUnlocked) return;
+  if(isScrolling) return;
 
-  }, { passive: true });
-</script>
+  accumulatedDelta += e.deltaY;
+  if(Math.abs(accumulatedDelta) < THRESHOLD) return;
 
+  isScrolling = true;
+
+  // Determine scroll sound
+  const scrollType = Math.abs(accumulatedDelta) > LONG_SCROLL_THRESHOLD ? "long" : "short";
+  const sound = scrollType === "long" ? longSound : shortSound;
+  sound.currentTime = 0;
+  sound.play();
+
+  // Update page index
+  if(accumulatedDelta > 0) {
+    currentIndex = Math.min(currentIndex + 1, totalPages - 1);
+  } else {
+    currentIndex = Math.max(currentIndex - 1, 0);
+  }
+
+  accumulatedDelta = 0;
+  showPage(currentIndex);
+
+  setTimeout(() => { isScrolling = false; }, COOLDOWN);
+}, { passive: true });
+
+  </script>
 </body>
 </html>
